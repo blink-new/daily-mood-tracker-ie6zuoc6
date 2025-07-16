@@ -5,7 +5,7 @@ import { Badge } from '../components/ui/badge'
 import { Button } from '../components/ui/button'
 import { Calendar } from '../components/ui/calendar'
 import { format, parseISO, isToday, isYesterday } from 'date-fns'
-import { CalendarDays, TrendingUp, TrendingDown, Minus } from 'lucide-react'
+import { CalendarDays, TrendingUp, TrendingDown, Minus, Dumbbell } from 'lucide-react'
 import { storageUtils, type MoodEntry } from '../lib/storage'
 
 const blink = createClient({
@@ -115,7 +115,7 @@ export default function MoodHistory() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 page-transition">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold">Mood History</h1>
         <div className="flex space-x-2">
@@ -185,9 +185,17 @@ export default function MoodHistory() {
                         <div className="text-6xl mb-2">
                           {moodEmojis[entry.mood_rating as keyof typeof moodEmojis]}
                         </div>
-                        <Badge className={moodColors[entry.mood_rating as keyof typeof moodColors]}>
-                          {entry.mood_rating}/10
-                        </Badge>
+                        <div className="flex items-center space-x-2">
+                          <Badge className={moodColors[entry.mood_rating as keyof typeof moodColors]}>
+                            {entry.mood_rating}/10
+                          </Badge>
+                          {entry.exercised && (
+                            <Badge variant="secondary" className="bg-green-100 text-green-800">
+                              <Dumbbell className="h-3 w-3 mr-1" />
+                              Exercised
+                            </Badge>
+                          )}
+                        </div>
                       </div>
                       {entry.notes && (
                         <div>
@@ -260,9 +268,16 @@ export default function MoodHistory() {
                           </div>
                         </div>
                       </div>
-                      <Badge className={moodColors[entry.mood_rating as keyof typeof moodColors]}>
-                        {entry.mood_rating}/10
-                      </Badge>
+                      <div className="flex items-center space-x-2">
+                        {entry.exercised && (
+                          <Badge variant="outline" className="text-green-600 border-green-200">
+                            <Dumbbell className="h-3 w-3" />
+                          </Badge>
+                        )}
+                        <Badge className={moodColors[entry.mood_rating as keyof typeof moodColors]}>
+                          {entry.mood_rating}/10
+                        </Badge>
+                      </div>
                     </div>
                   )
                 })}

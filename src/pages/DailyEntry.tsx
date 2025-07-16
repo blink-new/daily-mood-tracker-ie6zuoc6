@@ -6,9 +6,10 @@ import { Button } from '../components/ui/button'
 import { Textarea } from '../components/ui/textarea'
 import { Slider } from '../components/ui/slider'
 import { Badge } from '../components/ui/badge'
+import { Checkbox } from '../components/ui/checkbox'
 import { useToast } from '../hooks/use-toast'
 import { format } from 'date-fns'
-import { Save, ArrowLeft } from 'lucide-react'
+import { Save, ArrowLeft, Dumbbell } from 'lucide-react'
 import { storageUtils, type MoodEntry } from '../lib/storage'
 
 const blink = createClient({
@@ -36,6 +37,7 @@ const moodColors = {
 export default function DailyEntry() {
   const [moodRating, setMoodRating] = useState([5])
   const [notes, setNotes] = useState('')
+  const [exercised, setExercised] = useState(false)
   const [loading, setLoading] = useState(false)
   const [existingEntry, setExistingEntry] = useState<MoodEntry | null>(null)
   const navigate = useNavigate()
@@ -56,6 +58,7 @@ export default function DailyEntry() {
         setExistingEntry(entry)
         setMoodRating([entry.mood_rating])
         setNotes(entry.notes || '')
+        setExercised(entry.exercised || false)
       }
     } catch (error) {
       console.error('Error checking existing entry:', error)
@@ -81,7 +84,8 @@ export default function DailyEntry() {
         // Update existing entry
         const updatedEntry = storageUtils.updateMoodEntry(existingEntry.id, {
           mood_rating: moodRating[0],
-          notes: notes.trim() || undefined
+          notes: notes.trim() || undefined,
+          exercised: exercised
         })
         
         if (updatedEntry) {
@@ -97,6 +101,7 @@ export default function DailyEntry() {
           user_id: user.id,
           mood_rating: moodRating[0],
           notes: notes.trim() || undefined,
+          exercised: exercised,
           date: today
         })
         
@@ -127,7 +132,7 @@ export default function DailyEntry() {
   const currentMood = moodRating[0]
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
+    <div className="max-w-2xl mx-auto space-y-6 page-transition">
       <div className="flex items-center space-x-4">
         <Button
           variant="ghost"
@@ -206,6 +211,31 @@ export default function DailyEntry() {
               </Button>
             ))}
           </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Exercise & Activity</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center space-x-3">
+            <Checkbox
+              id="exercised"
+              checked={exercised}
+              onCheckedChange={(checked) => setExercised(checked as boolean)}
+            />
+            <label
+              htmlFor="exercised"
+              className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 flex items-center space-x-2 cursor-pointer"
+            >
+              <Dumbbell className="h-4 w-4 text-primary" />
+              <span>Did you exercise today?</span>
+            </label>
+          </div>
+          <p className="text-xs text-muted-foreground mt-2">
+            Track your physical activity to see patterns with your mood
+          </p>
         </CardContent>
       </Card>
 

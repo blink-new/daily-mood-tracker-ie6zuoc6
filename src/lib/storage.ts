@@ -4,6 +4,7 @@ export interface MoodEntry {
   user_id: string
   mood_rating: number
   notes?: string
+  exercised: boolean
   date: string
   created_at: string
 }
@@ -53,7 +54,7 @@ export const storageUtils = {
   },
 
   // Update a mood entry
-  updateMoodEntry: (id: string, updates: Partial<Pick<MoodEntry, 'mood_rating' | 'notes'>>): MoodEntry | null => {
+  updateMoodEntry: (id: string, updates: Partial<Pick<MoodEntry, 'mood_rating' | 'notes' | 'exercised'>>): MoodEntry | null => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY)
       if (!stored) return null

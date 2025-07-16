@@ -6,6 +6,7 @@ import DailyEntry from './pages/DailyEntry'
 import MoodHistory from './pages/MoodHistory'
 import Analytics from './pages/Analytics'
 import Navigation from './components/Navigation'
+import { ThemeProvider } from './contexts/ThemeContext'
 
 const blink = createClient({
   projectId: 'daily-mood-tracker-ie6zuoc6',
@@ -56,20 +57,22 @@ function App() {
   }
 
   return (
-    <Router>
-      <div className="min-h-screen bg-background">
-        <Navigation user={user} />
-        <main className="container mx-auto px-4 py-8">
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/entry" element={<DailyEntry />} />
-            <Route path="/history" element={<MoodHistory />} />
-            <Route path="/analytics" element={<Analytics />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </main>
-      </div>
-    </Router>
+    <ThemeProvider defaultTheme="system" storageKey="mood-tracker-theme">
+      <Router>
+        <div className="min-h-screen bg-background transition-colors duration-300">
+          <Navigation user={user} />
+          <main className="container mx-auto px-4 py-8">
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/entry" element={<DailyEntry />} />
+              <Route path="/history" element={<MoodHistory />} />
+              <Route path="/analytics" element={<Analytics />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </main>
+        </div>
+      </Router>
+    </ThemeProvider>
   )
 }
 
